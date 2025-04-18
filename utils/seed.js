@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const Product = require('../models/Product');
 const ApprovedEmail = require('../models/ApprovedEmail');
+const User = require('../models/User');
 
 // Load environment variables
 dotenv.config();
@@ -9,31 +10,49 @@ dotenv.config();
 // Sample products data
 const products = [
   {
-    title: 'Classic T-Shirt',
-    description: 'A comfortable cotton t-shirt for everyday wear',
-    price: 19.99,
-    image: 'https://example.com/images/tshirt.jpg',
-    sizes: ['S', 'M', 'L', 'XL'],
-    colors: ['Black', 'White', 'Navy', 'Gray'],
-    available_quantity: 100
+    "title": "Split Air Conditioner",
+    "description": "Energy-efficient split AC with fast cooling and low noise operation",
+    "price": 349.99,
+    "image": "https://i.imgur.com/8yUf7UL.jpg",
+    "sizes": ["1 Ton", "1.5 Ton", "2 Ton"],
+    "colors": ["White", "Silver"],
+    "available_quantity": 50
   },
   {
-    title: 'Slim Fit Jeans',
-    description: 'Modern slim fit jeans with stretch fabric for maximum comfort',
-    price: 49.99,
-    image: 'https://example.com/images/jeans.jpg',
-    sizes: ['28', '30', '32', '34', '36'],
-    colors: ['Blue', 'Black', 'Gray'],
-    available_quantity: 75
+    "title": "Window Air Conditioner",
+    "description": "Compact window AC perfect for small rooms with easy installation",
+    "price": 279.99,
+    "image": "https://i.imgur.com/vL9UhWe.jpg",
+    "sizes": ["0.8 Ton", "1 Ton", "1.5 Ton"],
+    "colors": ["White"],
+    "available_quantity": 30
   },
   {
-    title: 'Running Shoes',
-    description: 'Lightweight running shoes with cushioned insoles for comfort',
-    price: 89.99,
-    image: 'https://example.com/images/shoes.jpg',
-    sizes: ['7', '8', '9', '10', '11', '12'],
-    colors: ['Black', 'White', 'Red', 'Blue'],
-    available_quantity: 50
+    "title": "Inverter Split AC",
+    "description": "Smart inverter AC with Wi-Fi control and 5-star energy rating",
+    "price": 499.99,
+    "image": "https://i.imgur.com/sn4ofDi.jpg",
+    "sizes": ["1 Ton", "1.5 Ton", "2 Ton", "2.5 Ton"],
+    "colors": ["White", "Black"],
+    "available_quantity": 70
+  },
+  {
+    "title": "Ceiling Fan",
+    "description": "High-speed ceiling fan with elegant design and low power consumption",
+    "price": 59.99,
+    "image": "https://i.imgur.com/RAU7Z6f.jpg",
+    "sizes": ["48 inch", "52 inch"],
+    "colors": ["Brown", "White", "Ivory"],
+    "available_quantity": 120
+  },
+  {
+    "title": "Table Fan",
+    "description": "Portable table fan with 3-speed settings and adjustable tilt",
+    "price": 34.99,
+    "image": "https://i.imgur.com/NKDdASM.jpg",
+    "sizes": ["12 inch", "16 inch"],
+    "colors": ["Blue", "White", "Gray"],
+    "available_quantity": 80
   }
 ];
 
@@ -43,6 +62,34 @@ const approvedEmails = [
   { email: 'rider1@example.com' },
   { email: 'rider2@example.com' },
   { email: 'customer@example.com' }
+];
+
+// Sample users data
+const users = [
+  {
+    name: 'Admin User',
+    email: 'admin@example.com',
+    password: 'password123',
+    role: 'admin'
+  },
+  {
+    name: 'Rider One',
+    email: 'rider1@example.com',
+    password: 'password123',
+    role: 'rider'
+  },
+  {
+    name: 'Rider Two',
+    email: 'rider2@example.com',
+    password: 'password123',
+    role: 'rider'
+  },
+  {
+    name: 'Customer User',
+    email: 'customer@example.com',
+    password: 'password123',
+    role: 'customer'
+  }
 ];
 
 // Function to reset collections and seed data
@@ -60,6 +107,7 @@ const seedData = async () => {
     // Clear existing data
     await Product.deleteMany({});
     await ApprovedEmail.deleteMany({});
+    await User.deleteMany({});
 
     console.log('Data cleared');
 
@@ -70,6 +118,10 @@ const seedData = async () => {
     // Seed approved emails
     await ApprovedEmail.insertMany(approvedEmails);
     console.log(`${approvedEmails.length} approved emails seeded`);
+
+    // Seed users
+    await User.insertMany(users);
+    console.log(`${users.length} users seeded`);
 
     console.log('Data seeding complete!');
     process.exit(0);

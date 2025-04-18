@@ -26,8 +26,8 @@ const OrderSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['pending', 'assigned', 'shipped', 'delivered'],
-    default: 'pending'
+    enum: ['paid', 'assigned', 'shipped', 'delivered'],
+    default: 'paid'
   },
   assigned_rider: {
     type: mongoose.Schema.Types.ObjectId,
