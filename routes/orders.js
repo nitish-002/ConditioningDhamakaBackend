@@ -10,7 +10,22 @@ router.use(isAuthenticated);
 // Create order (customer only)
 router.post('/', authorize('customer'), async (req, res) => {
   try {
-    const { product_id, quantity, selected_size, selected_color } = req.body;
+    const { 
+      product_id, 
+      quantity, 
+      selected_size, 
+      selected_color,
+      shipping_details 
+    } = req.body;
+
+    // Validate shipping details
+    if (!shipping_details?.name || !shipping_details?.address || 
+        !shipping_details?.phone || !shipping_details?.email) {
+      return res.status(400).json({
+        success: false,
+        message: 'Shipping details are required'
+      });
+    }
     
     // Validate product exists
     const product = await Product.findById(product_id);
@@ -44,13 +59,19 @@ router.post('/', authorize('customer'), async (req, res) => {
       });
     }
     
-    // Create the order
+    // Create the order with shipping details
     const order = await Order.create({
       user_id: req.user._id,
       product_id,
       quantity,
       selected_size,
-      selected_color
+      selected_color,
+      shipping_details: {
+        name: shipping_details.name,
+        address: shipping_details.address,
+        phone: shipping_details.phone,
+        email: shipping_details.email
+      }
     });
     
     // Update product quantity
