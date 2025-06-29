@@ -156,6 +156,22 @@ router.get('/me', (req, res) => {
   });
 });
 
+// Debug endpoint to check session and authentication
+router.get('/debug', (req, res) => {
+  res.json({
+    sessionID: req.sessionID,
+    isAuthenticated: req.isAuthenticated(),
+    user: req.user || null,
+    session: req.session || null,
+    cookies: req.headers.cookie || null,
+    headers: {
+      origin: req.headers.origin,
+      referer: req.headers.referer,
+      userAgent: req.headers['user-agent']
+    }
+  });
+});
+
 // Logout
 router.get('/logout', (req, res, next) => {
   req.logout((err) => {

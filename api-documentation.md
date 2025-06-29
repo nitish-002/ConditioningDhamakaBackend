@@ -6,7 +6,7 @@ This document provides examples of how to use the API endpoints with cURL comman
 
 ```bash
 # Store the API base URL for convenience
-API_URL="http://localhost:5000"
+API_URL="https://conditioningdhamakabackend.onrender.com"
 
 # Store cookies in a file to maintain session
 COOKIE_FILE="/tmp/cookie.txt"
@@ -308,7 +308,7 @@ Here's a complete example of how to test the API flow:
 ```bash
 #!/bin/bash
 # Setup
-API_URL="http://localhost:5000"
+API_URL="https://conditioningdhamakabackend.onrender.com"
 COOKIE_FILE="/tmp/cookie.txt"
 
 # 1. Register as a customer
