@@ -29,8 +29,13 @@ mongoose.connect(process.env.MONGO_URI, {
 });
 
 // Middleware
+const allowedOrigins = [
+  process.env.FRONTEND_DEV_URL || 'http://localhost:5173',
+  process.env.FRONTEND_PROD_URL || 'https://acarea.netlify.app'
+].filter(Boolean); // Remove any undefined values
+
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: allowedOrigins,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
@@ -47,9 +52,9 @@ app.use(session({
     ttl: 60 * 60 * 24 // 1 day
   }),
   cookie: {
-    secure: false, // Set to false for development
+    secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
     httpOnly: true,
-    sameSite: 'lax',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // 'none' for cross-site in production
     maxAge: 1000 * 60 * 60 * 24 // 1 day
   }
 }));
