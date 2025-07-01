@@ -12,6 +12,9 @@ dotenv.config();
 // Initialize express app
 const app = express();
 
+// Trust first proxy (important for Render and other cloud platforms)
+app.set('trust proxy', 1);
+
 // Add CORS before other middleware
 // app.use(cors());
 app.use(express.json());
@@ -35,10 +38,20 @@ const allowedOrigins = [
 ].filter(Boolean); // Remove any undefined values
 
 app.use(cors({
-  origin: allowedOrigins,
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.log('CORS blocked origin:', origin);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   exposedHeaders: ['Set-Cookie']
 }));
 
@@ -55,8 +68,10 @@ app.use(session({
     secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
     httpOnly: true,
     sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', // 'none' for cross-site in production
-    maxAge: 1000 * 60 * 60 * 24 // 1 day
-  }
+    maxAge: 1000 * 60 * 60 * 24, // 1 day
+    domain: process.env.NODE_ENV === 'production' ? undefined : undefined // Let browser handle domain
+  },
+  name: 'sessionId' // Give the session cookie a specific name
 }));
 
 // Passport config
@@ -75,7 +90,20 @@ app.use('/admin', require('./routes/admin'));
 
 // Basic route
 app.get('/', (req, res) => {
-  res.send('E-commerce API is running');
+  res.json({
+    message: 'E-commerce API is running',
+    environment: process.env.NODE_ENV,
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'healthy',
+    environment: process.env.NODE_ENV,
+    timestamp: new Date().toISOString()
+  });
 });
 
 // Error handler

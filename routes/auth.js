@@ -5,6 +5,18 @@ const ApprovedEmail = require('../models/ApprovedEmail');
 const { isAuthenticated } = require('../middleware/auth');
 const router = express.Router();
 
+// Test endpoint for debugging
+router.get('/test', (req, res) => {
+  res.json({
+    success: true,
+    message: 'Auth route is working',
+    sessionId: req.sessionID || 'no session',
+    hasUser: !!req.user,
+    environment: process.env.NODE_ENV,
+    timestamp: new Date().toISOString()
+  });
+});
+
 // Register user
 router.post('/register', async (req, res) => {
   try {
@@ -135,11 +147,17 @@ router.get('/login-failed', (req, res) => {
 
 // Get current user
 router.get('/me', (req, res) => {
+  console.log('Session ID:', req.sessionID);
+  console.log('Session:', req.session);
+  console.log('User:', req.user);
+  console.log('Is Authenticated:', req.isAuthenticated ? req.isAuthenticated() : 'no method');
+  
   if (!req.user) {
     return res.status(401).json({ 
       success: false, 
       authenticated: false,
-      message: 'Not authenticated' 
+      message: 'Not authenticated',
+      sessionId: req.sessionID || 'no session'
     });
   }
   
